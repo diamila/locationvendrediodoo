@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Locations form view -->
+        <record model="ir.ui.view" id="location_form_view">
+            <field name="name">location.form</field>
+            <field name="model">lb.location</field>
+            <field name="arch" type="xml">
+                <form string="Location Form">
+                <header>
+                    <button name="action_confirm" type="object" string="En Location" class="oe_highlight" states="draft"/>
+                    <button name="action_done" type="object" string="Contrat Achevé" class="oe_highlight"
+                            attrs="{'invisible': [('state','!=', 'confirm')]}"/>
+                    <button name="action_cancel" states="ferme" type="object" string="New Contrat" class="oe_highlight" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ferme"/>
+                </header>
+                    <sheet>
+                    <div class="oe_button_box" name="button_box" groups="base.group_user">
+                        <button name="print_report" type="object" string="Imprimé" class="oe_highlight" style="color:#000080" />
+                        <button class="oe_stat_button" name="attachment_tree_view" type="object" icon="fa-files-o">
+                            <field string="Contrats" name="doc_count" widget="statinfo"/>
+                        </button>
+					</div>
+                          <div> <field name="contrat"  placeholder="Nom Du Contrat"/></div>
+                       <group >
+                         <group string="Information Bien">
+                             <field name="bien_loue"/>
+                             <field name="bailleur"/>
+                             <field name="prixlocation_id"/>
+                             <field name="utilisation"/>
+                         </group>
+                         <group string="Information Locataire">
+                               <field name="locataires" domain="[('customer','=',True)]" context="{'search_default_customer':1, 'show_address': 1}" options="{&quot;always_reload&quot;: True}"/>
+                               <field name="mobile"/>
+                               <field name="adresse_locataire"/>
+                                 <field name="cin_ou_passeport"/>
+                         </group>
+                       </group>
+                       <group String="Caution">
+                         <group string="caution Déposé">
+                             <field name="caution"/>
+                             <field name="date_depot"/>
+                         </group>
+                         <group string="Fin Contrat">
+                             <field name="depot_retourne" readonly="1"/><br></br>
+                             <field name="maintenance"/>
+                             <field name="date_returne"/>
+                             <field name="caution_returne"/>
+                         </group>
+                       </group>
+                       <group string="Informations Contrat">
+                         <group>
+                             <field name="date_debut"/>
+                            <field name="date_quittancement"/>
+                             <field name="paiement"/>
+                         </group>
+                         <group>
+                            <field name="date_expiration"/>
+                         </group>
+                       </group>
+                        <notebook>
+                            <page string="Loyer">
+                                <group>
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="loyer_sans_charges" widget="monetary"/>
+								</group>
+							</page>
+                            <page string="Autre Paiements">
+                                <group>
+									<field name="frais_retard" placeholder="Information à titre indicatif"/>
+                                </group>
+                                <group>
+									<label for="autre_paiement" string="Autre Paiements"/>
+										<div>
+											<field name="description_autre_paiement" placeholder="Description"/>
+											<field name="autre_paiement" widget="monetary" placeholder="Montant"/>
+										</div>
+								</group>
+							</page>
+                            <page string="Conditions Particulières">
+                                <group>
+									<field name="condition_particuliere"/>
+								</group>
+							</page>
+                            <page string="Enregistrement des paiements">
+                                <group>
+									<field name="locataire_a_jour"/>
+                                    <field name="currency_id" invisible="1"/>
+									<field name="reste_a_payer" widget="monetary" attrs="{'invisible':['|',('locataire_a_jour','=','oui')]}"/>
+
+								</group>
+                                <field name="enregistrement_paiement">
+                                    <tree string="Enregistrement des paiements" editable="bottom">
+                                        <field name="date_paiement"/>
+                                        <field name="objet_paiement"/>
+                                        <field name="periode_paye_debut"/>
+                                        <field name="periode_paye_fin"/>
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="montant_paye" widget="monetary" sum="Total"/>
+                                        <field name="commentaire_paiement"/>
+                                    </tree>
+                                </field>
+                            </page>
+						</notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Locations tree view -->
+
+        <record model="ir.ui.view" id="location_tree_view">
+            <field name="name">location.tree</field>
+            <field name="model">lb.location</field>
+            <field name="arch" type="xml">
+                <tree string="Location Tree">
+                    <field name="locataires"/>
+                    <field name="mobile"/>
+                    <field name="bien_loue" string="Nom du bien"/>
+                    <field name="loyer_sans_charges" string="Loyer"/>
+                    <field name="utilisation"/>
+                    <field name="date_debut"/>
+                    <field name="date_expiration"/>
+                    <field name="locataire_a_jour" string="Le locataire est-il à jour ?"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Locations search view -->
+        <record id="view_location_filter" model="ir.ui.view">
+            <field name="name">Rechercher Location</field>
+            <field name="model">lb.location</field>
+            <field name="arch" type="xml">
+                <search string="Rechercher Location">
+                    <field name="state"/>
+                    <field name="bien_loue"/>
+                    <field name="locataires"/>
+                    <field name="utilisation"/>
+                     <field name="date_debut"/>
+                    <field name="date_expiration"/>
+                    <filter string="New" name="draft" domain="[('state', '=', 'draft')]"/>
+                        <filter string="En cours" name="confirm" domain="[('state', '=', 'confirm')]"/>
+                        <filter string="Fermé" name="ferme" domain="[('state', '=', 'ferme')]"/>
+                        <group expand="0" string="Group By">
+                        <filter string="Etat" name="state" context="{'group_by':'state'}"/>
+                        </group>
+                </search>
+            </field>
+        </record>
+
+         <!--vue kanban-->
+         <record id="bien_kanban" model="ir.ui.view">
+        <field name="name">lb.location.kanban</field>
+        <field name="model">lb.location</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="bien_loue"/>
+                <field name="loyer_sans_charges"/>
+                <field name="date_debut"/>
+                <field name="date_expiration"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div>
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title"><field name="display_name"/></strong>
+                                <div class="o_kanban_tags_section"/>
+                                <ul>
+                                    <li>Bien Loué : <field name="bien_loue"/></li>
+                                    <li>prix_location : <field name="loyer_sans_charges"/></li>
+                                    <li>Date Debut : <field name="date_debut"/></li>
+                                    <li>Dat Expiration : <field name="date_expiration"/></li>
+                                    <li>Locataire:<field name="locataires"/></li>
+                                    <li>N° Tel Locataire :<field name="mobile"/></li>
+                                </ul>
+                                <ul>
+                                    <li><button style="font-size:15px;color:#483D8B" class="btn btn-secondary"><field name="state" style="font-size:15px;color:#5338B6"/></button></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
+        <record model="ir.actions.act_window" id="location_list_action">
+            <field name="name">Locations</field>
+            <field name="res_model">lb.location</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="search_view_id" ref="view_location_filter"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Créer une nouvelle location
+                </p>
+            </field>
+        </record>
+
+         <menuitem id="location_menu" name="Contrat de Location"
+                  parent="rental_app_menu" sequence="6"/>
+
+        <menuitem id="location_menu_menu" name="Contrat de Location"
+                  parent="location_menu"
+                  action="location_list_action" sequence="1"/>
+
+
+    </data>
+</odoo>

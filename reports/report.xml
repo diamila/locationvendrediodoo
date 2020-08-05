@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <report
+        id="contrat_card"
+        string="Contrat"
+        model="lb.location"
+        report_type="qweb-pdf"
+        name="location_biens.report_contrat"
+        file="location_biens.report_contrat"/>
+
+</odoo>

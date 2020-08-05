@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+
+        <record id="product_template_inherit" model="ir.ui.view">
+      <field name="name">product.template.inherit</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_only_form_view"/>
+      <field name="arch" type="xml">
+          <button name="toggle_active" position="after">
+              <button name="tt_locate_bien" widget="map" string="obtenir l'emplacement" type="object" style="font-size:17px;color:#5338B6" class="fa fa-map-marker"/>
+          </button>
+
+         <!--
+          <field name="type" position="attributes">
+               <attribute name="invisible">1</attribute>
+          </field>
+          -->
+          <field name="invoice_policy" position="attributes">
+               <attribute name="invisible">1</attribute>
+           </field>
+          <!--
+           <field name="standard_price" position="attributes">
+               <attribute name="invisible">1</attribute>
+          </field>
+          -->
+           <xpath expr="//field[@name='name']" position="after">
+               <sheet>
+                   <group>
+                   <field name="bailleur_id" string="bailleur"></field>
+                   <field name="latitude" string="latitude"/>
+                   <field name="longitude" string="longitude"/>
+                   <field name="Date"/>
+                   <field name="nbre_tour"/>
+                   <field name="ameublement"/>
+                   <field name="reference"/>
+                     <field name="type_id"/>
+                     <field name="gestionnaire_id"/>
+                     <field name="chambres"/>
+                     <field name="salles_bain"/>
+                     <field name="parking"/>
+                     <field name="oriente_vers"/>
+                     <field name="adresse"/>
+                     <field name="ville"  class="o_address_city"/>
+                     <field name="pays" placeholder="Pays" class="o_address_country"/>
+                     <field name="company_id"/>
+                     <field name="currency_id" invisible="1"/>
+                       <field name="location_ok"/>
+                      </group>
+               </sheet>
+          </xpath>
+          <xpath expr="//page[@name='general_information']" position="after">
+              <page string="LIEU LE PLUS PROCHES">
+                                <group>
+									<field name="plus_proche_ids"/>
+								</group>
+							</page>
+                            <page string="SOUS PROPRIETE">
+                                <group>
+									<field name="sous_propriete_ids"/>
+								</group>
+							</page>
+                            <page string="Plans d'étage, Photos et Documents">
+                                <page string="Plans d'étage"><group><field name="plan_ids"></field></group></page>
+                                <page string="Photos"><group><field name="photos_ids"></field></group></page>
+                                <page string="Documents"><group><field name="documents_ids"></field></group></page>
+							</page>
+        </xpath>
+      </field>
+    </record>
+
+
+
+       <record id="product_template_tree_inherit" model="ir.ui.view">
+      <field name="name">product.template.tree.inherit</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_tree_view"/>
+      <field name="arch" type="xml">
+          <field name="type" position="attributes">
+               <attribute name="invisible">1</attribute>
+          </field>
+           <field name="standard_price" position="attributes">
+               <attribute name="invisible">1</attribute>
+          </field>
+           <field name="list_price" position="after">
+            <field name="adresse" />
+            <field name="type_id"/>
+           </field>
+      </field>
+    </record>
+
+        <record id="product_template_kanban_inherit" model="ir.ui.view">
+      <field name="name">product.template.kanban.inherit</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="product.product_template_kanban_view"/>
+      <field name="arch" type="xml">
+           <field name="lst_price" position="after">
+            <field name="adresse" />
+           <field name="name" position="after">
+            <field name="type_id"/>
+           </field> </field>
+      </field>
+    </record>
+
+
+        <record model="ir.actions.act_window" id="article_list_action">
+            <field name="name">Article</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                  Articles
+                </p>
+            </field>
+        </record>
+
+
+         <menuitem id="article_menu" name="Article"
+                  parent="rental_app_menu" sequence="9"/>
+
+        <menuitem id="articless_menu" name="Biens"
+                  parent="article_menu"
+                  action="article_list_action" sequence="1"/>
+
+</data>
+</odoo>
