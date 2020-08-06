@@ -82,6 +82,7 @@
 									<field name="condition_particuliere"/>
 								</group>
 							</page>
+                            <!--
                             <page string="Enregistrement des paiements">
                                 <group>
 									<field name="locataire_a_jour"/>
@@ -101,6 +102,7 @@
                                     </tree>
                                 </field>
                             </page>
+                            -->
 						</notebook>
                     </sheet>
                 </form>

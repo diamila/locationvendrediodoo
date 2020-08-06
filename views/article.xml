@@ -117,7 +117,7 @@
         </record>
 
 
-         <menuitem id="article_menu" name="Article"
+         <menuitem id="article_menu" name="Produits"
                   parent="rental_app_menu" sequence="9"/>
 
         <menuitem id="articless_menu" name="Biens"
