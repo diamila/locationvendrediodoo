@@ -25,6 +25,14 @@ class BienNormal(models.Model):
     ameublement = fields.Char(string="ameublement")
     reference = fields.Char(string="Référence ameublement")
 
+    contrat = fields.Many2one('lb.location', ondelete='cascade', string="Contrat lié au bien")
+
+    state = fields.Selection([
+        ('draft', 'New'),
+        ('confirm', 'En location'),
+        ('ferme', 'Fermé'),
+    ], string='Status', related='contrat.state')
+
     location_ok = fields.Boolean(
         'Peut étre en location', default=True)
 
@@ -110,11 +118,11 @@ class BienNormal(models.Model):
     photos_ids = fields.Many2many('lb.photos', string="photos")
     documents_ids = fields.Many2many('lb.documents', string="documents")
 
-    @api.multi
-    def get_name(self):
-        for rec in self:
-            res.append((rec.nom, '%s - %s' % (prix_location)))
-        return res
+   # @api.multi
+    #def get_name(self):
+        #for rec in self:
+            #res.append((rec.nom, '%s - %s' % (prix_location)))
+        #return res
 
     contrat = fields.Many2one('lb.location', ondelete='cascade', string="Contrat lié au bien")
 
