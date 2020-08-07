@@ -18,6 +18,24 @@ class Locataire(models.Model):
     ville = fields.Char()
     enregistrement_contact = fields.One2many('lb.contact', 'contact_id', string="Contact")
 
+    contrat_count = fields.Integer(string='Contrats', compute='get_contrat_count')
+
+    @api.multi
+    def open_locataire_contrat(self):
+        return {
+            'name': _('Contrats'),
+            'domain': [('locataires', '=', self.id)],
+            'view_type': 'form',
+            'res_model': 'lb.location',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'type': 'ir.actions.act_window',
+        }
+
+    def get_contrat_count(self):
+        count = self.env['lb.location'].search_count([('locataires', '=', self.id)])
+        self.contrat_count = count
+
 class Contact(models.Model):
     _name = 'lb.contact'
 

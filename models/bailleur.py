@@ -38,6 +38,24 @@ class Bailleur(models.Model):
     num_piece_identite = fields.Char(string='Numéro de la pièce d\'identité')
     enregistrement_contact = fields.One2many('lb.contact_bailleur', 'contact_id', string="Contact")
 
+    bien_count = fields.Integer(string='Biens', compute='get_bien_count')
+
+    @api.multi
+    def open_bailleur_bien(self):
+        return {
+            'name': _('Biens'),
+            'domain': [('bailleur_id', '=', self.id)],
+            'view_type': 'form',
+            'res_model': 'product.template',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'type': 'ir.actions.act_window',
+        }
+
+    def get_bien_count(self):
+        count = self.env['product.template'].search_count([('bailleur_id', '=', self.id)])
+        self.bien_count = count
+
 
 class Contact(models.Model):
     _name = 'lb.contact_bailleur'

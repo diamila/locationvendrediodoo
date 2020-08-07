@@ -21,6 +21,11 @@
           <button name="toggle_active" position="after">
               <button name="tt_locate_bien" widget="map" string="obtenir l'emplacement" type="object" style="font-size:17px;color:#5338B6" class="fa fa-map-marker"/>
           </button>
+          <button name="tt_locate_bien" position="after">
+           <button name="open_bien_contrat" class="oe_stat_button" type="object" icon="fas fa-file-contract">
+                            <field string="Contrats" name="contrat_count" widget="statinfo"/>
+                        </button>
+          </button>
          <!--
           <field name="type" position="attributes">
                <attribute name="invisible">1</attribute>
@@ -37,7 +42,7 @@
            <xpath expr="//field[@name='name']" position="after">
                <sheet>
                    <group>
-                       <field name="contrat" style="text-align:left" placeholder="si le bien est lié à un contrat dc veiller l'ajouter..."/>
+                       <!--<field name="contrat" style="text-align:left" placeholder="si le bien est lié à un contrat dc veiller l'ajouter..."/>-->
                    <field name="bailleur_id" string="bailleur"></field>
                    <field name="latitude" string="latitude"/>
                    <field name="longitude" string="longitude"/>

@@ -15,15 +15,20 @@ class Location(models.Model):
     _rec_name = 'contrat'
 
     contrat = fields.Char(string="Nom du Contrat")
-    _sql_constraints = [
-        ('reference_unique',
-         'UNIQUE(contrat)',
-         "Le nom du contrat doit être unique"),
-    ]
+
     # champs---Information BIen"
-    bien_loue = fields.Many2one('product.template', ondelete='cascade', string="Bien Loué", required=True)
-    bailleur = fields.Many2one(related='bien_loue.bailleur_id', ondelete='cascade', string="Bailleur")
-    type_bien = fields.Many2one(related='bien_loue.type_id', ondelete='cascade', string="Type Bien")
+    bien_loue = fields.Many2one('product.template', string="Bien Loué", required=True)
+    #state qui es lié au bien
+    etat_bien = fields.Selection([
+        ('draft', 'New'),
+        ('confirm', 'Ce Bien est deja en location'),
+        ('ferme', 'contrat achevé pour Ce Bien'),
+    ], string='STatut du bien choisi:', related='bien_loue.state', compute='get_contrat')
+
+
+
+    bailleur = fields.Many2one(related='bien_loue.bailleur_id', string="Bailleur")
+    type_bien = fields.Many2one(related='bien_loue.type_id', string="Type Bien")
 
     prixlocation_id = fields.Float(string="Prix de la location (hors charges en fcfa)",
                                    related='bien_loue.list_price', default=0.0)
@@ -41,7 +46,7 @@ class Location(models.Model):
 
     # champs----Montant Déposé
     caution = fields.Float(string="caution déposé")
-    date_depot = fields.Date(string="Date depot caution", required=True)
+    date_depot = fields.Date(string="Date depot caution")
 
     depot_retourne = fields.Boolean('depot_retourne')
     maintenance = fields.Float(string="coût maintenance", default=0.0)
@@ -57,8 +62,8 @@ class Location(models.Model):
 
     # champs---information Contrat
     # validations de la date de debut et d'expiration
-    date_debut = fields.Date(string="Date Début", required=True)
-    date_expiration = fields.Date(string="Date D'expiration", required=True)
+    date_debut = fields.Date(string="Date Début")
+    date_expiration = fields.Date(string="Date D'expiration")
 
     date_quittancement = fields.Selection(
         [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'),
@@ -88,27 +93,17 @@ class Location(models.Model):
     doc_count = fields.Integer(compute='_compute_attached_docs_count', string="Documents")
     locataire_a_jour = fields.Selection([('oui', 'Oui'), ('non', 'Non')], string="Le locataire est-il à jour ?")
 
-    _sql_constraints = [
-        ('reference_location_unique',
-         'UNIQUE(ref_location)',
-         "La référence doit être unique"),
-    ]
 
-    _sql_constraints = [
-        ('locatin_bien_unique',
-         'UNIQUE(bien_loue)',
-         "Ce bien est déjà sous location"),
-    ]
 
     @api.multi
     def print_report(self):
         return self.env.ref('location_biens.contrat_card').report_action(self)
 
-    # états/barre
+    # états/barre LOCATION
     state = fields.Selection([
         ('draft', 'Disponible'),
         ('confirm', 'En Location'),
-        ('ferme', 'Contrat Close'),
+        ('ferme', 'Bien Disponible'),
     ], string='Status', readonly=True, default='confirm')
 
     def action_confirm(self):
@@ -173,11 +168,18 @@ class Location(models.Model):
                 raise exceptions.ValidationError("La fin du bail doit être supérieur au début du bail")
 
 
+
+    @api.constrains('bien_loue')
+    def _check_something(self):
+            if (self.etat_bien ,'==' ,'confirm'):
+                raise ValidationError("ce bien est en location: %s" % self.bien_loue)
+
+
 class Paiement(models.Model):
     _name = 'lb.paiement'
     _rec_name = 'paiement_id'
 
-    paiement_id = fields.Many2one('lb.location', ondelete='cascade', string="Location")
+    paiement_id = fields.Many2one('lb.location', string="Location")
     locataire_id = fields.Many2one(related='paiement_id.locataires', string="Locataire")
     loyer_sans_charges = fields.Float(related='paiement_id.loyer_sans_charges', string="Loyer charges comprises")
     fin_bail_id = fields.Date(related='paiement_id.date_expiration', string="Date Expiration")

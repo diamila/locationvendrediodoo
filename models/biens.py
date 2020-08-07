@@ -26,7 +26,6 @@ class BienNormal(models.Model):
         country = self.env['res.country'].search([('code', '=', 'MA')], limit=1)
         return country
 
-
     latitude = fields.Char(string="Latitude", default="0.0")
     longitude = fields.Char(string="Longitude", default="0.0")
     Date = fields.Date()
@@ -133,13 +132,17 @@ class BienNormal(models.Model):
             #res.append((rec.nom, '%s - %s' % (prix_location)))
         #return res
 
-    contrat = fields.Many2one('lb.location', ondelete='cascade', string="Contrat lié au bien")
+    #contrat = fields.Many2one('lb.location', ondelete='cascade', string="Contrat lié au bien")
 
     state = fields.Selection([
         ('draft', 'New'),
         ('confirm', 'En Cour'),
         ('ferme', 'Fermé'),
-    ], string='Status', related='contrat.state')
+    ], string='Status',compute='get_contrat')
+
+    def get_contrat(self):
+        count = self.env['lb.location'].search_count([('bien_loue', '=', self.id)])
+        self.contrat_count = count
 
     # géolocalisation du bien
     def tt_locate_bien(self):
@@ -147,6 +150,24 @@ class BienNormal(models.Model):
             "type": "ir.actions.act_url",
             "url": 'https://www.google.com/maps/search/?api=1&query=' + self.longitude + ', -' + self.latitude,
         }
+
+    contrat_count = fields.Integer(string='Contrats', compute='get_contrat_count')
+
+    @api.multi
+    def open_bien_contrat(self):
+        return {
+            'name': _('Contrats'),
+            'domain': [('bien_loue', '=', self.id)],
+            'view_type': 'form',
+            'res_model': 'lb.location',
+            'view_id': False,
+            'view_mode': 'tree,form',
+            'type': 'ir.actions.act_window',
+        }
+
+    def get_contrat_count(self):
+        count = self.env['lb.location'].search_count([('bien_loue', '=', self.id)])
+        self.contrat_count = count
 
 
 class Type(models.Model):

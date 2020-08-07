@@ -9,6 +9,11 @@
       <field name="model">res.partner</field>
       <field name="inherit_id" ref="base.view_partner_form"/>
       <field name="arch" type="xml">
+          <button name="toggle_active" position="after">
+           <button name="open_locataire_contrat" class="oe_stat_button" type="object" icon="fas fa-file-contract">
+                            <field string="Contrats" name="contrat_count" widget="statinfo"/>
+                        </button>
+          </button>
         <xpath expr="//field[@name='email']" position="replace">
           <field name="email" string="E-mail"/>
         </xpath>

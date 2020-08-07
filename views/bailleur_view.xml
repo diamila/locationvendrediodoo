@@ -9,14 +9,21 @@
             <field name="arch" type="xml">
                 <form string="Bailleur Form">
                     <sheet>
-                     <div>
-                         <field name="image" widget="image" class = "oe_left oe_avatar"/>
-                     </div>
+                        <div class="oe_button_box" name="button_box">
+                          <button name="open_bailleur_bien" class="oe_stat_button" type="object">
+                            <field string="Biens" name="bien_count" widget="statinfo"/>
+                          </button>
+                        </div>
+                     <field name="image" widget="image" class="oe_avatar"/>
+                     <div class="oe_title">
+                        <h1>
+                             <field name="nom" default_focus="1" placeholder="Nom Bailleur"/>
+                        </h1>
+                    </div>
                         <br></br>
                         <br></br>
                     <group>
                         <group>
-                              <field name="nom" default_focus="1" placeholder="Nom Complet"/>
                                 <field name="street" placeholder="Adresse..." class="o_address_street"/>
                                 <field name="street2" placeholder="Adresse2..." class="o_address_street"/>
                                 <field name="code_postale" placeholder="Code Postale"/><br></br>

@@ -9,7 +9,7 @@
                 <form string="Location Form">
                 <header>
                     <button name="action_confirm" type="object" string="En Location" class="oe_highlight" states="draft"/>
-                    <button name="action_done" type="object" string="Contrat Achevé" class="oe_highlight"
+                    <button name="action_done" type="object" string="Close Contrat" class="oe_highlight"
                             attrs="{'invisible': [('state','!=', 'confirm')]}"/>
                     <button name="action_cancel" states="ferme" type="object" string="New Contrat" class="oe_highlight" />
                     <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ferme"/>
@@ -18,13 +18,21 @@
                     <div class="oe_button_box" name="button_box" groups="base.group_user">
                         <button name="print_report" type="object" string="Imprimé" class="oe_highlight" style="color:#000080" />
                         <button class="oe_stat_button" name="attachment_tree_view" type="object" icon="fa-files-o">
-                            <field string="Contrats" name="doc_count" widget="statinfo"/>
+                            <field string="Document suplépentaire" name="doc_count" widget="statinfo"/>
                         </button>
 					</div>
-                          <div> <field name="contrat"  placeholder="Nom Du Contrat"/></div>
-                       <group >
-                         <group string="Information Bien">
+                        <group>
+                         <group>
                              <field name="bien_loue"/>
+                         </group>
+                         <group>
+                               <div>
+                             <field name="etat_bien" style="font-size:25px;color:#FF0000" String="statut bien"/>
+                             </div>
+                         </group>
+                       </group>
+                       <group>
+                         <group string="Information Bien">
                              <field name="bailleur"/>
                              <field name="prixlocation_id"/>
                              <field name="utilisation"/>
